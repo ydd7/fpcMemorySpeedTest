@@ -24,9 +24,12 @@ type
     constructor Create; override;
     destructor Destroy; override;
   published
-    procedure Copy_CIC;
-    procedure Read_CIC;
-    procedure Write_CIC;
+    procedure Copy_8B_CIC;
+    procedure Read_1B_CIC;
+    procedure Read_2B_CIC;
+    procedure Read_4B_CIC;
+    procedure Read_8B_CIC;
+    procedure Write_8B_CIC;
   end;
 
 implementation
@@ -41,7 +44,9 @@ begin
   OperationUnit := 'B';
   OperationUnitKB := 1024;
 
-  TestsAssign([Read_CIC, Write_CIC, Copy_CIC]);
+  TestsAssign([Read_1B_CIC, Read_2B_CIC, Read_4B_CIC, Read_8B_CIC,
+    Write_8B_CIC, Copy_8B_CIC]
+  );
   FBufFrom := AllocMem(BUF_SIZE);
   GetMem(FBufTo, BUF_SIZE);
 end;
@@ -53,7 +58,7 @@ begin
   inherited;
 end;
 
-procedure TMemorySpeedTest.Copy_CIC;
+procedure TMemorySpeedTest.Copy_8B_CIC;
 var
   PFrom, PTo: PInt64;
   LLastP1: Pointer;
@@ -69,7 +74,52 @@ begin
   end;
 end;
 
-procedure TMemorySpeedTest.Read_CIC;
+procedure TMemorySpeedTest.Read_1B_CIC;
+var
+  P: PByte;
+  LLastP1: Pointer;
+begin
+  P := FBufFrom;
+  LLastP1 := Pointer(PtrUInt(P) + BUF_SIZE);
+  while (PtrUInt(P) < PtrUInt(LLastP1)) do
+  begin
+    if (P^ = 1) then
+      Abort;
+    Inc(P);
+  end;
+end;
+
+procedure TMemorySpeedTest.Read_2B_CIC;
+var
+  P: PWord;
+  LLastP1: Pointer;
+begin
+  P := FBufFrom;
+  LLastP1 := Pointer(PtrUInt(P) + BUF_SIZE);
+  while (PtrUInt(P) < PtrUInt(LLastP1)) do
+  begin
+    if (P^ = 1) then
+      Abort;
+    Inc(P);
+  end;
+end;
+
+procedure TMemorySpeedTest.Read_4B_CIC;
+var
+  P: PInteger;
+  LLastP1: Pointer;
+begin
+  P := FBufFrom;
+  LLastP1 := Pointer(PtrUInt(P) + BUF_SIZE);
+  while (PtrUInt(P) < PtrUInt(LLastP1)) do
+  begin
+    if (P^ = 1) then
+      Abort;
+    Inc(P);
+  end;
+end;
+
+procedure TMemorySpeedTest.Read_8B_CIC;
 var
   P: PInt64;
   LLastP1: Pointer;
@@ -84,7 +134,7 @@ begin
   end;
 end;
 
-procedure TMemorySpeedTest.Write_CIC;
+procedure TMemorySpeedTest.Write_8B_CIC;
 var
   P: PInt64;
   LLastP1: Pointer;
